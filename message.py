@@ -76,7 +76,7 @@ class Message:
             return None
         payload = bytearray()
         while len(payload) < header.payload_size():
-            payload.extend(stream.recv(header.payload_size()))
+            payload.extend(stream.recv(header.payload_size() - len(payload)))
         checksum = double_sha256(payload)[:4]
         assert header.checksum() == checksum
         return Message(header, bytes(payload))

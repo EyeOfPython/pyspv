@@ -1,12 +1,12 @@
 import struct
 from io import BytesIO
-from typing import List
+from typing import List, Iterable
 
 from serialize import read_var_int
 
 
 class InvVector:
-    FORMAT = 'I32s'
+    FORMAT = '<I32s'
 
     def __init__(self, type_id: int, hash_bytes: bytes) -> None:
         self._type_id = type_id
@@ -42,6 +42,9 @@ class InvMessage:
             inv_vector_bytes = b.read(struct.calcsize(InvVector.FORMAT))
             inventory.append(InvVector.deserialize(inv_vector_bytes))
         return InvMessage(inventory)
+
+    def inventory(self) -> Iterable[InvVector]:
+        return iter(self._inventory)
 
     def __repr__(self) -> str:
         return f'InvMessage({self._inventory})'
